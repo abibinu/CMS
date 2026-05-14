@@ -1,39 +1,231 @@
-from rest_framework import viewsets, status
-from rest_framework.decorators import action
+from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from .models import LabTechnician
-from .serializers import LabTechnicianSerializer, LabTechnicianListSerializer
+
+from .models import TblLabTest
+from doctor.models import TblLabTestPrescription
+
+from .serializers import (
+    LabTestSerializer,
+    LabTestPrescriptionSerializer
+)
 
 
-class LabTechnicianViewSet(viewsets.ModelViewSet):
-    """ViewSet for LabTechnician model
-    
-    Provides list, create, retrieve, update, and destroy actions.
-    """
-    queryset = LabTechnician.objects.all()
-    serializer_class = LabTechnicianSerializer
-    permission_classes = [IsAuthenticated]
-    
-    def get_serializer_class(self):
-        """Use different serializers for different actions"""
-        if self.action == 'list':
-            return LabTechnicianListSerializer
-        return LabTechnicianSerializer
-    
-    @action(detail=False, methods=['get'])
-    def by_lab(self, request):
-        """Get lab technicians by lab"""
-        lab_id = request.query_params.get('lab_id')
-        if lab_id:
-            technicians = self.get_queryset().filter(lab_id=lab_id)
-            serializer = self.get_serializer(technicians, many=True)
-            return Response(serializer.data)
-        return Response({'error': 'lab_id parameter required'}, status=status.HTTP_400_BAD_REQUEST)
-    
-    @action(detail=True, methods=['post'])
-    def assign_test(self, request, pk=None):
-        """Assign a test to lab technician"""
-        technician = self.get_object()
-        # Implement your test assignment logic here
-        return Response({'status': 'test assigned to technician'})
+# =========================================
+# LAB TEST MANAGEMENT
+# =========================================
+
+@api_view(['POST'])
+def add_lab_test(request):
+
+    serializer = LabTestSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Lab test added successfully",
+                "data": serializer.data
+            },
+            status=status.HTTP_201_CREATED
+        )
+
+    return Response(
+        serializer.errors,
+        status=status.HTTP_400_BAD_REQUEST
+    )
+
+
+@api_view(['PUT'])
+def update_lab_test(request, labTestId):
+
+    try:
+        lab_test = TblLabTest.objects.get(
+            LabTestId=labTestId
+        )
+    except TblLabTest.DoesNotExist:
+        return Response(
+            {"error": "Lab test not found"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    serializer = LabTestSerializer(
+        lab_test,
+        data=request.data,
+        partial=True
+    )
+
+    if serializer.is_valid():
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Lab test updated successfully",
+                "data": serializer.data
+            }
+        )
+
+    return Response(
+        serializer.errors,
+        status=status.HTTP_400_BAD_REQUEST
+    )
+
+
+@api_view(['GET'])
+def get_lab_test(request, labTestId):
+
+    try:
+        lab_test = TblLabTest.objects.get(
+            LabTestId=labTestId
+        )
+    except TblLabTest.DoesNotExist:
+        return Response(
+            {"error": "Lab test not found"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    serializer = LabTestSerializer(lab_test)
+
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def list_lab_tests(request):
+
+    tests = TblLabTest.objects.filter(IsActive=True)
+
+    serializer = LabTestSerializer(
+        tests,
+        many=True
+    )
+
+    return Response(serializer.data)
+
+
+@api_view(['PATCH'])
+def deactivate_lab_test(request, labTestId):
+
+    try:
+        lab_test = TblLabTest.objects.get(
+            LabTestId=labTestId
+        )
+    except TblLabTest.DoesNotExist:
+        return Response(
+            {"error": "Lab test not found"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    lab_test.IsActive = False
+    lab_test.save()
+
+    return Response(
+        {"message": "Lab test deactivated successfully"}
+    )
+
+
+# =========================================
+# LAB TEST RESULT MANAGEMENT
+# =========================================
+
+@api_view(['PUT'])
+def record_lab_test_result(request, labTestPrescriptionId):
+
+    try:
+        prescription = TblLabTestPrescription.objects.get(
+            LabTestPrescriptionId=labTestPrescriptionId
+        )
+
+    except TblLabTestPrescription.DoesNotExist:
+        return Response(
+            {"error": "Prescription not found"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    serializer = LabTestPrescriptionSerializer(
+        prescription,
+        data=request.data,
+        partial=True
+    )
+
+    if serializer.is_valid():
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Lab test result recorded successfully",
+                "data": serializer.data
+            }
+        )
+
+    return Response(
+        serializer.errors,
+        status=status.HTTP_400_BAD_REQUEST
+    )
+
+
+@api_view(['GET'])
+def get_lab_test_result_by_appointment(request, appointmentId):
+
+    results = TblLabTestPrescription.objects.filter(
+        AppointmentId=appointmentId,
+        IsActive=True
+    )
+
+    serializer = LabTestPrescriptionSerializer(
+        results,
+        many=True
+    )
+
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def list_lab_test_results(request):
+
+    start_date = request.GET.get('startDate')
+    end_date = request.GET.get('endDate')
+
+    queryset = TblLabTestPrescription.objects.filter(
+        IsActive=True
+    )
+
+    if start_date and end_date:
+        queryset = queryset.filter(
+            CreatedDate__date__range=[start_date, end_date]
+        )
+
+    serializer = LabTestPrescriptionSerializer(
+        queryset,
+        many=True
+    )
+
+    return Response(serializer.data)
+
+
+@api_view(['PATCH'])
+def deactivate_lab_test_prescription(
+        request,
+        labTestPrescriptionId
+):
+
+    try:
+        prescription = TblLabTestPrescription.objects.get(
+            LabTestPrescriptionId=labTestPrescriptionId
+        )
+
+    except TblLabTestPrescription.DoesNotExist:
+        return Response(
+            {"error": "Prescription not found"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    prescription.IsActive = False
+    prescription.save()
+
+    return Response(
+        {
+            "message":
+            "Lab test prescription deactivated successfully"
+        }
+    )

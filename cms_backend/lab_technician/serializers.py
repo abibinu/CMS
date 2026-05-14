@@ -1,19 +1,37 @@
 from rest_framework import serializers
-from .models import *
+from .models import (
+    TblLabTestCategory,
+    TblLabTest
+)
 
+from doctor.models import TblLabTestPrescription
 
-class LabTechnicianSerializer(serializers.ModelSerializer):
-    """Serializer for LabTechnician model"""
-    
+class LabTestCategorySerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = LabTechnician
-        fields = '__all__'
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        model = TblLabTestCategory
+        fields = "__all__"
 
 
-class LabTechnicianListSerializer(serializers.ModelSerializer):
-    """Lightweight serializer for list view"""
-    
+class LabTestSerializer(serializers.ModelSerializer):
+
+    category_name = serializers.CharField(
+        source='LabTestCategoryId.LabTestCategoryName',
+        read_only=True
+    )
+
     class Meta:
-        model = LabTechnician
-        fields = ['id', 'name', 'email', 'lab_id']  # Customize as needed
+        model = TblLabTest
+        fields = "__all__"
+
+
+class LabTestPrescriptionSerializer(serializers.ModelSerializer):
+
+    test_name = serializers.CharField(
+        source='LabTestId.TestName',
+        read_only=True
+    )
+
+    class Meta:
+        model = TblLabTestPrescription
+        fields = "__all__"

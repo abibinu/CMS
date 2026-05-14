@@ -14,7 +14,6 @@ urlpatterns = [
     # =====================================
     # LAB TEST RESULT MANAGEMENT
     # =====================================
-    # Add the slash here specifically for the error you just got
     path('labtests/results/<int:labTestPrescriptionId>/', views.record_lab_test_result),
     path('labtests/results/appointment/<int:appointmentId>/', views.get_lab_test_result_by_appointment),
     path('labtests/results/', views.list_lab_test_results),

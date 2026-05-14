@@ -1,19 +1,8 @@
 from rest_framework import serializers
-from .models import *
+from .models import TblStaff, TblRole
 
-
-class AdministratorSerializer(serializers.ModelSerializer):
-    """Serializer for Administrator model"""
-    
+class StaffSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Administrator
+        model = TblStaff
         fields = '__all__'
-        read_only_fields = ['id', 'created_at', 'updated_at']
-
-
-class AdministratorListSerializer(serializers.ModelSerializer):
-    """Lightweight serializer for list view"""
-    
-    class Meta:
-        model = Administrator
-        fields = ['id', 'name', 'email']  # Customize as needed
+        extra_kwargs = {'Password': {'write_only': True}} # Security: don't return passwords in GET requests

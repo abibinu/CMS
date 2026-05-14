@@ -37,6 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'administrator',  # Custom app for staff and role management
+    'doctor',  # Custom app for doctor management
+    'pharmacist',  # Custom app for pharmacist management
+    'receptionist',  # Custom app for receptionist management
+    'lab_technician',  # Custom app for lab technician management
+    'rest_framework',  # Django REST Framework for API development
 ]
 
 MIDDLEWARE = [

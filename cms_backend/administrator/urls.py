@@ -1,11 +1,10 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import StaffViewSet
 
-app_name = 'administrator'
+router = DefaultRouter()
+router.register(r'staff', StaffViewSet) # This creates /api/staff/ automatically
 
 urlpatterns = [
-    # Add your URL patterns here
-    # Example:
-    # path('list/', views.AdministratorListView.as_view(), name='administrator-list'),
-    # path('detail/<int:pk>/', views.AdministratorDetailView.as_view(), name='administrator-detail'),
+    path('', include(router.urls)),
 ]

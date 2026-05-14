@@ -1,7 +1,6 @@
 <div align="center">
 
-# MacFast CMS
-### Clinic Management System
+# Clinic Management System
 
 [![Status](https://img.shields.io/badge/Status-In%20Development-blue?style=flat-square)](https://github.com)
 [![Modules](https://img.shields.io/badge/Modules-5-green?style=flat-square)](https://github.com)

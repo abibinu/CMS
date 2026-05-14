@@ -1,11 +1,11 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import MembershipViewSet, PatientViewSet
 
-app_name = 'receptionist'
+router = DefaultRouter()
+router.register(r'memberships', MembershipViewSet)
+router.register(r'patients', PatientViewSet)
 
 urlpatterns = [
-    # Add your URL patterns here
-    # Example:
-    # path('list/', views.ReceptionistListView.as_view(), name='receptionist-list'),
-    # path('detail/<int:pk>/', views.ReceptionistDetailView.as_view(), name='receptionist-detail'),
+    path('', include(router.urls)),
 ]

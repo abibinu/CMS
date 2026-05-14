@@ -1,19 +1,15 @@
 from rest_framework import serializers
-from .models import *
+from .models import TblMembership, TblPatient
 
-
-class ReceptionistSerializer(serializers.ModelSerializer):
-    """Serializer for Receptionist model"""
-    
+class MembershipSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Receptionist
+        model = TblMembership
         fields = '__all__'
-        read_only_fields = ['id', 'created_at', 'updated_at']
 
+class PatientSerializer(serializers.ModelSerializer):
+    # Read-only field to show the actual membership name instead of just the ID in GET requests
+    MembershipType = serializers.CharField(source='MembershipId.MembershipType', read_only=True)
 
-class ReceptionistListSerializer(serializers.ModelSerializer):
-    """Lightweight serializer for list view"""
-    
     class Meta:
-        model = Receptionist
-        fields = ['id', 'name', 'email', 'department']  # Customize as needed
+        model = TblPatient
+        fields = '__all__'

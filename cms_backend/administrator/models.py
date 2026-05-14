@@ -25,9 +25,15 @@ class TblStaff(models.Model):
             self.Password = make_password(self.Password) 
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f"{self.FullName} ({self.UserName})"
+
 class TblSpecialization(models.Model):
     SpecializationId = models.AutoField(primary_key=True) 
     SpecializationName = models.CharField(max_length=100) 
+
+    def __str__(self):
+        return self.SpecializationName
 
 class TblDoctor(models.Model):
     DoctorId = models.AutoField(primary_key=True) 
@@ -35,3 +41,6 @@ class TblDoctor(models.Model):
     SpecializationId = models.ForeignKey(TblSpecialization, on_delete=models.CASCADE) 
     StaffId = models.ForeignKey(TblStaff, on_delete=models.CASCADE) 
     IsActive = models.BooleanField(default=True) 
+
+    def __str__(self):
+        return f"Dr. {self.StaffId.FullName}"

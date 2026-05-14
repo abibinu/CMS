@@ -1,11 +1,12 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import MedicineCategoryViewSet, MedicineViewSet, MedicineStockViewSet
 
-app_name = 'pharmacist'
+router = DefaultRouter()
+router.register(r'categories', MedicineCategoryViewSet)
+router.register(r'medicines', MedicineViewSet)
+router.register(r'inventory', MedicineStockViewSet)
 
 urlpatterns = [
-    # Add your URL patterns here
-    # Example:
-    # path('list/', views.PharmacistListView.as_view(), name='pharmacist-list'),
-    # path('detail/<int:pk>/', views.PharmacistDetailView.as_view(), name='pharmacist-detail'),
+    path('', include(router.urls)),
 ]

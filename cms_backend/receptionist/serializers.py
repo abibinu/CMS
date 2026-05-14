@@ -2,9 +2,18 @@ from rest_framework import serializers
 from .models import *
 
 
-# Add your serializers here
-# Example:
-# class ReceptionistSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Receptionist
-#         fields = '__all__'
+class ReceptionistSerializer(serializers.ModelSerializer):
+    """Serializer for Receptionist model"""
+    
+    class Meta:
+        model = Receptionist
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class ReceptionistListSerializer(serializers.ModelSerializer):
+    """Lightweight serializer for list view"""
+    
+    class Meta:
+        model = Receptionist
+        fields = ['id', 'name', 'email', 'department']  # Customize as needed

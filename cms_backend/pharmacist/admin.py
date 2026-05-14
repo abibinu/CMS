@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import TblMedicineCategory, TblMedicine, TblMedicineStock
 
-# Register your models here.
+admin.site.register(TblMedicineCategory)
+admin.site.register(TblMedicine)
+admin.site.register(TblMedicineStock)

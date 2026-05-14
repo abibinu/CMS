@@ -8,12 +8,12 @@ from administrator.models import TblRole
 
 def seed_roles():
     roles = ['Administrator', 'Receptionist', 'Doctor', 'Pharmacist', 'Lab Technician']
-    for role_name in roles:
-        role, created = TblRole.objects.get_or_create(RoleName=role_name)
+    for name in roles:
+        role, created = TblRole.objects.get_or_create(RoleName=name)
         if created:
-            print(f"Created role: {role_name}")
+            print(f"Successfully seeded role: {name}")
         else:
-            print(f"Role already exists: {role_name}")
+            print(f"Role already exists: {name}")
 
 if __name__ == "__main__":
     seed_roles()

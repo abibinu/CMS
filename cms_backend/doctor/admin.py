@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import TblConsultation, TblMedicinePrescription, TblLabTestPrescription
 
-# Register your models here.
+admin.site.register(TblConsultation)
+admin.site.register(TblMedicinePrescription)
+admin.site.register(TblLabTestPrescription)

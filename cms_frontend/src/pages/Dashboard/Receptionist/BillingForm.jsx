@@ -14,8 +14,8 @@ const BillingForm = () => {
 
   const [formData, setFormData] = useState({
     AppointmentId: editBill?.AppointmentId || '',
-    RegistrationCharge: editBill?.RegistrationCharge || 0,
-    AdditionalCharges: editBill?.AdditionalCharges || 0,
+    RegistrationCharge: parseFloat(editBill?.RegistrationCharge) || 0,
+    AdditionalCharges: parseFloat(editBill?.AdditionalCharges) || 0,
   });
 
   useEffect(() => {
@@ -47,16 +47,52 @@ const BillingForm = () => {
     setLoading(true);
     setError('');
 
+    // Ensure numeric fields are numbers, not strings
+    const submitData = {
+      RegistrationCharge: parseFloat(formData.RegistrationCharge) || 0,
+      AdditionalCharges: parseFloat(formData.AdditionalCharges) || 0,
+    };
+
+    if (!editBill) {
+      submitData.AppointmentId = parseInt(formData.AppointmentId);
+    }
+
     try {
       if (editBill) {
-        await api.put(`/billing/${editBill.BillId}/`, formData);
+        await api.patch(`/billing/${editBill.BillId}/`, submitData);
       } else {
-        await api.post('/billing/', formData);
+        await api.post('/billing/', submitData);
       }
       navigate('/receptionist-dashboard/billing');
     } catch (err) {
-      console.error(err);
-      setError('An error occurred while saving the bill.');
+      console.error('Bill save error:', err);
+      console.error('Error response:', err.response?.data);
+      
+      // Try to extract detailed error message from response
+      let errorMsg = 'An error occurred while saving the bill.';
+      const errorData = err.response?.data;
+      
+      if (typeof errorData === 'string') {
+        errorMsg = errorData;
+      } else if (errorData?.detail) {
+        errorMsg = errorData.detail;
+      } else if (errorData?.AppointmentId && Array.isArray(errorData.AppointmentId)) {
+        errorMsg = errorData.AppointmentId[0];
+      } else if (errorData?.AppointmentId && typeof errorData.AppointmentId === 'string') {
+        errorMsg = errorData.AppointmentId;
+      } else if (errorData?.RegistrationCharge && Array.isArray(errorData.RegistrationCharge)) {
+        errorMsg = `Registration Charge: ${errorData.RegistrationCharge[0]}`;
+      } else if (errorData?.AdditionalCharges && Array.isArray(errorData.AdditionalCharges)) {
+        errorMsg = `Additional Charges: ${errorData.AdditionalCharges[0]}`;
+      } else if (typeof errorData === 'object') {
+        // If error data is an object, try to extract the first error message
+        const firstError = Object.values(errorData).find(val => typeof val === 'string' || Array.isArray(val));
+        if (firstError) {
+          errorMsg = Array.isArray(firstError) ? firstError[0] : firstError;
+        }
+      }
+      
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -72,6 +108,12 @@ const BillingForm = () => {
       </div>
 
       {error && <div className="error-message">{error}</div>}
+
+      {!editBill && appointments.length === 0 && (
+        <div style={{ padding: '1rem', background: '#fee2e2', borderRadius: '8px', color: '#991b1b', marginBottom: '1rem' }}>
+          <strong>No completed appointments available.</strong> Please mark an appointment as "Completed" in the Appointments section before generating a bill.
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
         

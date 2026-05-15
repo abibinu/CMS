@@ -49,6 +49,12 @@ const InventoryForm = () => {
     setLoading(true);
     setError('');
 
+    if (categories.length === 0) {
+      setError('Please add Medicine Categories first by contacting the Administrator.');
+      setLoading(false);
+      return;
+    }
+
     try {
       // 1. Create the Medicine
       const medicinePayload = {
@@ -75,6 +81,7 @@ const InventoryForm = () => {
 
       await api.post('/pharmacist/inventory/', stockPayload);
       
+      alert('Medicine added to inventory successfully!');
       navigate('/pharmacist-dashboard/inventory');
     } catch (err) {
       console.error(err);
@@ -98,6 +105,11 @@ const InventoryForm = () => {
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
         
         {/* Medicine Details */}
+        {categories.length === 0 && (
+          <div style={{ gridColumn: '1 / -1', padding: '1rem', background: '#fee2e2', borderRadius: '8px', color: '#991b1b', marginBottom: '1rem' }}>
+            <strong>❌ No medicine categories found!</strong> Please contact the Administrator to add Medicine Categories before adding medicines.
+          </div>
+        )}
         <div style={{ gridColumn: '1 / -1', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem', marginBottom: '0.5rem' }}>
           <h3 style={{ margin: 0, color: 'var(--primary)', fontSize: '1.1rem' }}>Medicine Details</h3>
         </div>
@@ -109,10 +121,14 @@ const InventoryForm = () => {
 
         <div className="input-group" style={{ marginBottom: 0 }}>
           <label className="input-label">Category</label>
-          <select name="MedicineCategoryId" className="input-field" value={formData.MedicineCategoryId} onChange={handleChange} required>
-            {categories.map(c => (
-              <option key={c.MedicineCategoryId} value={c.MedicineCategoryId}>{c.MedicineCategoryName}</option>
-            ))}
+          <select name="MedicineCategoryId" className="input-field" value={formData.MedicineCategoryId} onChange={handleChange} required disabled={categories.length === 0}>
+            {categories.length === 0 ? (
+              <option value="">-- No categories available --</option>
+            ) : (
+              categories.map(c => (
+                <option key={c.MedicineCategoryId} value={c.MedicineCategoryId}>{c.MedicineCategoryName}</option>
+              ))
+            )}
           </select>
         </div>
 

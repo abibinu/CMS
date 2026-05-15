@@ -37,7 +37,7 @@ const CategoriesList = () => {
   };
 
   const filtered = categories.filter(c => 
-    c.CategoryName.toLowerCase().includes(searchTerm.toLowerCase())
+    c.MedicineCategoryName?.toLowerCase()?.includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -79,7 +79,7 @@ const CategoriesList = () => {
                 filtered.map((cat) => (
                   <tr key={cat.MedicineCategoryId} className={!cat.IsActive ? 'inactive-row' : ''}>
                     <td>#{cat.MedicineCategoryId}</td>
-                    <td className="font-medium">{cat.CategoryName}</td>
+                    <td className="font-medium">{cat.MedicineCategoryName}</td>
                     <td>
                       <span className={`status-dot ${cat.IsActive ? 'active' : 'inactive'}`}></span>
                       {cat.IsActive ? 'Active' : 'Inactive'}

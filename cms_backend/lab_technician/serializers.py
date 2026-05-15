@@ -15,7 +15,7 @@ class LabTestCategorySerializer(serializers.ModelSerializer):
 
 class LabTestSerializer(serializers.ModelSerializer):
 
-    category_name = serializers.CharField(
+    CategoryName = serializers.CharField(
         source='LabTestCategoryId.LabTestCategoryName',
         read_only=True
     )
@@ -27,7 +27,7 @@ class LabTestSerializer(serializers.ModelSerializer):
 
 class LabTestPrescriptionSerializer(serializers.ModelSerializer):
 
-    test_name = serializers.CharField(
+    TestName = serializers.CharField(
         source='LabTestId.TestName',
         read_only=True
     )

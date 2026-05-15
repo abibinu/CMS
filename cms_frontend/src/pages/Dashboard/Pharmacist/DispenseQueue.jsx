@@ -53,14 +53,14 @@ const DispenseQueue = () => {
     setDispenseQuantities(prev => ({ ...prev, [prescriptionId]: value }));
   };
 
-  const handlePrint = (prescription, qty) => {
+  const handlePrint = (prescription, qty, patientName) => {
     const printWindow = window.open('', '', 'height=600,width=800');
     printWindow.document.write('<html><head><title>Medicine Bill</title>');
     printWindow.document.write('<style>body{font-family:sans-serif;padding:2rem;} .bill-header{text-align:center;border-bottom:2px solid #ccc;padding-bottom:1rem;margin-bottom:2rem;} .row{display:flex;justify-content:space-between;margin-bottom:0.5rem;}</style>');
     printWindow.document.write('</head><body>');
     printWindow.document.write('<div class="bill-header"><h2>MacFast Pharmacy</h2><p>Official Medicine Bill</p></div>');
     printWindow.document.write(`<div class="row"><b>Date:</b> ${new Date().toLocaleDateString()}</div>`);
-    printWindow.document.write(`<div class="row"><b>Patient:</b> ${prescription.PatientName || 'Walk-in'}</div>`);
+    printWindow.document.write(`<div class="row"><b>Patient:</b> ${patientName || 'Walk-in'}</div>`);
     printWindow.document.write('<hr style="margin:1.5rem 0;border:none;border-top:1px dashed #ccc;" />');
     printWindow.document.write(`<div class="row"><span>Medicine:</span> <span>${prescription.MedicineName}</span></div>`);
     printWindow.document.write(`<div class="row"><span>Quantity Dispensed:</span> <span>${qty}</span></div>`);
@@ -71,7 +71,7 @@ const DispenseQueue = () => {
     printWindow.print();
   };
 
-  const handleDispenseItem = async (prescription) => {
+  const handleDispenseItem = async (prescription, patientName) => {
     const qty = parseInt(dispenseQuantities[prescription.MedicinePrescriptionId] || 0);
     if (qty <= 0) {
       alert("Please enter a valid quantity to dispense.");
@@ -103,7 +103,7 @@ const DispenseQueue = () => {
       await fetchQueueData();
       
       // Generate and Print Bill
-      handlePrint(prescription, qty);
+      handlePrint(prescription, qty, patientName);
 
     } catch (err) {
       console.error(err);
@@ -170,7 +170,7 @@ const DispenseQueue = () => {
                         <button 
                           className="btn-primary" 
                           style={{ padding: '0.4rem 0.8rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.4rem', marginLeft: 'auto' }}
-                          onClick={() => handleDispenseItem(p)}
+                          onClick={() => handleDispenseItem(p, group.appointment.PatientName)}
                           disabled={processing || !dispenseQuantities[p.MedicinePrescriptionId]}
                         >
                           <CheckCircle size={14} /> Dispense

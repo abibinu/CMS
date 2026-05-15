@@ -80,9 +80,9 @@ const ReceptionistHome = () => (
   <div>
     <h1 style={{ marginBottom: '1.5rem' }}>Receptionist Dashboard</h1>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-      <DashboardCard title="Patient Registration" description="Register new patients and manage existing records." />
-      <DashboardCard title="Appointments" description="Schedule and manage doctor appointments." />
-      <DashboardCard title="Billing" description="Generate and print consultation bills." />
+      <DashboardCard title="Patient Registration" description="Register new patients and manage existing records." link="patients" />
+      <DashboardCard title="Appointments" description="Schedule and manage doctor appointments." link="appointments" />
+      <DashboardCard title="Billing" description="Generate and print consultation bills." link="billing" />
     </div>
   </div>
 );
@@ -158,9 +158,9 @@ const LabTechnicianHome = () => (
   <div>
     <h1 style={{ marginBottom: '1.5rem' }}>Lab Technician Dashboard</h1>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-      <DashboardCard title="Pending Tests" description="View and record results for pending lab tests." />
-      <DashboardCard title="Lab Tests Reference" description="View the dictionary of available lab tests." />
-      <DashboardCard title="Dictionary Management" description="Add, edit, or deactivate lab tests." />
+      <DashboardCard title="Pending Tests" description="View and record results for pending lab tests." link="pending" />
+      <DashboardCard title="Lab Tests Reference" description="View the dictionary of available lab tests." link="reference" />
+      <DashboardCard title="Dictionary Management" description="Add, edit, or deactivate lab tests." link="management" />
     </div>
   </div>
 );

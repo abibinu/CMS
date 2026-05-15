@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import TblMembership, TblPatient, TblAppointment
+from .models import TblMembership, TblPatient, TblAppointment, TblBilling
 
 class MembershipSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,10 +40,6 @@ class AppointmentSerializer(serializers.ModelSerializer):
         
         return super().create(validated_data)
 
-# receptionist/serializers.py (Add this)
-
-from .models import TblBilling
-
 class BillingSerializer(serializers.ModelSerializer):
     PatientName = serializers.CharField(source='AppointmentId.PatientId.PatientName', read_only=True)
     DoctorName = serializers.CharField(source='AppointmentId.DoctorId.StaffId.FullName', read_only=True)
@@ -51,19 +47,72 @@ class BillingSerializer(serializers.ModelSerializer):
     class Meta:
         model = TblBilling
         fields = '__all__'
-        # Add this line to prevent the "required field" error in Postman
-        read_only_fields = ['TotalAmount', 'BillDate']
+        read_only_fields = ['TotalAmount', 'BillDate', 'ConsultationFee']
+
+    def validate(self, data):
+        """Validate that appointment exists and is completed (only on create)"""
+        # Only validate AppointmentId and its status during creation
+        # During updates, we only care about charges
+        if not self.instance:  # This is a CREATE operation
+            appointment = data.get('AppointmentId')
+            if not appointment:
+                raise serializers.ValidationError(
+                    {"AppointmentId": "Appointment is required."}
+                )
+            if appointment.ConsultationStatus != 'Completed':
+                raise serializers.ValidationError(
+                    {"AppointmentId": "Only completed appointments can be billed."}
+                )
+            if not appointment.DoctorId:
+                raise serializers.ValidationError(
+                    {"AppointmentId": "Appointment must have a doctor assigned."}
+                )
+            if not appointment.DoctorId.ConsultationFee:
+                raise serializers.ValidationError(
+                    {"AppointmentId": "Doctor does not have a consultation fee set."}
+                )
+        # For UPDATE operations, just validate charges
+        return data
 
     def create(self, validated_data):
-        appointment = validated_data.get('AppointmentId')
-        if appointment and appointment.DoctorId:
-            fee = appointment.DoctorId.ConsultationFee
-            validated_data['ConsultationFee'] = fee
-        else:
-            fee = validated_data.get('ConsultationFee', 0)
-
-        reg = validated_data.get('RegistrationCharge', 0)
-        extra = validated_data.get('AdditionalCharges', 0)
+        """Create billing record with auto-calculated consultation fee and total"""
+        from decimal import Decimal
         
-        validated_data['TotalAmount'] = fee + reg + extra
+        appointment = validated_data.get('AppointmentId')
+        if not appointment or not appointment.DoctorId:
+            raise serializers.ValidationError(
+                {"AppointmentId": "Invalid appointment or doctor not assigned."}
+            )
+        
+        # Auto-retrieve consultation fee from doctor
+        consultation_fee = Decimal(str(appointment.DoctorId.ConsultationFee))
+        reg_charge = Decimal(str(validated_data.get('RegistrationCharge') or 0))
+        additional_charges = Decimal(str(validated_data.get('AdditionalCharges') or 0))
+        
+        # Calculate total
+        total_amount = consultation_fee + reg_charge + additional_charges
+        
+        # Set calculated values
+        validated_data['ConsultationFee'] = consultation_fee
+        validated_data['TotalAmount'] = total_amount
+        
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        """Update billing with recalculated total"""
+        from decimal import Decimal
+        
+        # Update only these fields
+        instance.RegistrationCharge = Decimal(str(validated_data.get('RegistrationCharge', instance.RegistrationCharge)))
+        instance.AdditionalCharges = Decimal(str(validated_data.get('AdditionalCharges', instance.AdditionalCharges)))
+        
+        # Recalculate total (consultation fee stays the same)
+        total_amount = (
+            Decimal(str(instance.ConsultationFee)) + 
+            instance.RegistrationCharge + 
+            instance.AdditionalCharges
+        )
+        instance.TotalAmount = total_amount
+        
+        instance.save()
+        return instance

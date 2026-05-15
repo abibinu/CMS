@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Stethoscope } from 'lucide-react';
+import { Search, Stethoscope, AlertCircle } from 'lucide-react';
 import api from '../../../api/axios';
 
 const DoctorAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [noProfile, setNoProfile] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +25,7 @@ const DoctorAppointments = () => {
 
       if (!myDoctorProfile) {
         console.warn("No Doctor Profile found for this user!");
+        setNoProfile(true);
         setLoading(false);
         return;
       }
@@ -66,6 +68,12 @@ const DoctorAppointments = () => {
 
       {loading ? (
         <p>Loading queue...</p>
+      ) : noProfile ? (
+        <div style={{ padding: '2rem', textAlign: 'center', background: '#fee2e2', borderRadius: '8px', color: '#991b1b', marginTop: '1rem' }}>
+          <AlertCircle size={48} style={{ opacity: 0.5, marginBottom: '1rem' }} />
+          <h3>Doctor Profile Missing</h3>
+          <p>No doctor profile is associated with your account. Please ask the Administrator to configure your doctor profile.</p>
+        </div>
       ) : (
         <div className="table-container">
           <table className="data-table">

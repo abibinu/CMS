@@ -101,7 +101,7 @@ const AppointmentForm = () => {
           <label className="input-label">Doctor</label>
           <select name="DoctorId" className="input-field" value={formData.DoctorId} onChange={handleChange} required>
             {doctors.map(d => (
-              <option key={d.DoctorId} value={d.DoctorId}>Dr. {d.StaffName} ({d.SpecializationName})</option>
+              <option key={d.DoctorId} value={d.DoctorId}>Dr. {d.DoctorName} ({d.SpecializationName})</option>
             ))}
           </select>
         </div>

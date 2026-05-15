@@ -73,7 +73,7 @@ const PendingTests = () => {
       });
 
       // 2. Deactivate the prescription so it leaves the queue
-      await api.patch(`/labtests/${prescription.LabTestPrescriptionId}/deactivate/`);
+      await api.patch(`/labtests/results/${prescription.LabTestPrescriptionId}/deactivate/`);
 
       // Refresh the queue
       await fetchQueueData();

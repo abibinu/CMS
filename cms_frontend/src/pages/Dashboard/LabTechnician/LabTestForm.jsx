@@ -40,7 +40,7 @@ const LabTestForm = () => {
       } else {
         await api.post('/labtests/', formData);
       }
-      navigate('/lab-dashboard/management');
+      navigate('/labtechnician-dashboard/management');
     } catch (err) {
       console.error(err);
       setError('An error occurred while saving the lab test. Please check inputs.');

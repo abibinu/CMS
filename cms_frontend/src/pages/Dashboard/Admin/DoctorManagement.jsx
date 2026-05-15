@@ -37,8 +37,8 @@ const DoctorManagement = () => {
   };
 
   const filteredDoctors = doctors.filter(d => 
-    d.StaffName?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    d.SpecializationName?.toLowerCase().includes(searchTerm.toLowerCase())
+    d.DoctorName?.toLowerCase()?.includes(searchTerm.toLowerCase()) || 
+    d.SpecializationName?.toLowerCase()?.includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -82,7 +82,7 @@ const DoctorManagement = () => {
                 filteredDoctors.map((doc) => (
                   <tr key={doc.DoctorId} className={!doc.IsActive ? 'inactive-row' : ''}>
                     <td>#{doc.DoctorId}</td>
-                    <td className="font-medium">{doc.StaffName}</td>
+                    <td className="font-medium">{doc.DoctorName}</td>
                     <td><span className="badge">{doc.SpecializationName}</span></td>
                     <td>₹{doc.ConsultationFee}</td>
                     <td>

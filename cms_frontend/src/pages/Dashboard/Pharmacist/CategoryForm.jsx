@@ -11,7 +11,7 @@ const CategoryForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
-    CategoryName: editCat?.CategoryName || '',
+    MedicineCategoryName: editCat?.MedicineCategoryName || '',
     IsActive: editCat ? editCat.IsActive : true,
   });
 
@@ -59,10 +59,10 @@ const CategoryForm = () => {
           <label className="input-label">Category Name</label>
           <input 
             type="text" 
-            name="CategoryName"
+            name="MedicineCategoryName"
             className="input-field" 
             required 
-            value={formData.CategoryName} 
+            value={formData.MedicineCategoryName} 
             onChange={handleChange} 
             placeholder="e.g. Antibiotics, Painkillers"
           />

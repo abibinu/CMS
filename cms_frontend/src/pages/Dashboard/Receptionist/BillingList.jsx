@@ -37,6 +37,7 @@ const BillingList = () => {
     printWindow.document.write(`<div class="row"><b>Bill #:</b> ${bill.BillId}</div>`);
     printWindow.document.write(`<div class="row"><b>Date:</b> ${new Date(bill.BillDate).toLocaleDateString()}</div>`);
     printWindow.document.write(`<div class="row"><b>Patient:</b> ${bill.PatientName}</div>`);
+    printWindow.document.write(`<div class="row"><b>Doctor:</b> Dr. ${bill.DoctorName}</div>`);
     printWindow.document.write('<hr style="margin:1.5rem 0;border:none;border-top:1px dashed #ccc;" />');
     printWindow.document.write(`<div class="row"><span>Consultation Fee:</span> <span>₹${bill.ConsultationFee}</span></div>`);
     printWindow.document.write(`<div class="row"><span>Registration Charge:</span> <span>₹${bill.RegistrationCharge}</span></div>`);

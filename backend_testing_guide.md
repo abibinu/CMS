@@ -177,7 +177,33 @@ This document provides a comprehensive guide for testing all backend functionali
 
 ## 4. Pharmacist Operations
 
-### Add Inventory
+### Add Medicine Category
+- **Method:** `POST`
+- **URL:** `/pharmacist/categories/`
+- **Body:**
+```json
+{
+    "MedicineCategoryName": "Antibiotics",
+    "IsActive": true
+}
+```
+
+### Add Medicine Reference
+- **Method:** `POST`
+- **URL:** `/pharmacist/medicines/`
+- **Body:**
+```json
+{
+    "MedicineName": "Amoxicillin",
+    "ManufacturingDate": "2024-01-01",
+    "ExpiryDate": "2028-01-01",
+    "Unit": "Tablet",
+    "MedicineCategoryId": 1,
+    "IsActive": true
+}
+```
+
+### Add Inventory Stock
 - **Method:** `POST`
 - **URL:** `/pharmacist/inventory/`
 - **Body:**
@@ -185,6 +211,8 @@ This document provides a comprehensive guide for testing all backend functionali
 {
     "StockInHand": 500,
     "ReOrderLevel": 50,
+    "Purchase": 500,
+    "Issuance": 0,
     "MedicineId": 1,
     "IsActive": true
 }
@@ -210,6 +238,18 @@ This document provides a comprehensive guide for testing all backend functionali
 ---
 
 ## 5. Lab Technician Operations
+
+### Add Lab Test Reference
+- **Method:** `POST`
+- **URL:** `/labtests/`
+- **Body:**
+```json
+{
+    "TestName": "Complete Blood Count (CBC)",
+    "TestCode": "CBC-01",
+    "IsActive": true
+}
+```
 
 ### Record Lab Test Result
 - **Method:** `PUT`

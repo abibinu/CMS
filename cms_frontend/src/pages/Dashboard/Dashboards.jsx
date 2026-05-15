@@ -65,25 +65,37 @@ export const ReceptionistDashboard = () => (
   </Routes>
 );
 
+import DoctorAppointments from './Doctor/DoctorAppointments';
+import ConsultationWorkspace from './Doctor/ConsultationWorkspace';
+
 export const DoctorDashboard = () => (
+  <Routes>
+    <Route index element={<DoctorAppointments />} />
+    <Route path="consult/:id" element={<ConsultationWorkspace />} />
+  </Routes>
+);
+
+import InventoryList from './Pharmacist/InventoryList';
+import InventoryForm from './Pharmacist/InventoryForm';
+import DispenseQueue from './Pharmacist/DispenseQueue';
+
+const PharmacistHome = () => (
   <div>
-    <h1 style={{ marginBottom: '1.5rem' }}>Doctor Dashboard</h1>
+    <h1 style={{ marginBottom: '1.5rem' }}>Pharmacist Dashboard</h1>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-      <DashboardCard title="My Appointments" description="View today's patient schedule." />
-      <DashboardCard title="Consultations" description="Record symptoms, diagnosis, and notes." />
-      <DashboardCard title="Prescriptions" description="Prescribe medicines and lab tests." />
+      <DashboardCard title="Dispense Queue" description="Process active medicine prescriptions." />
+      <DashboardCard title="Inventory" description="Manage medicine stock and re-order levels." />
     </div>
   </div>
 );
 
 export const PharmacistDashboard = () => (
-  <div>
-    <h1 style={{ marginBottom: '1.5rem' }}>Pharmacist Dashboard</h1>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-      <DashboardCard title="Inventory" description="Manage medicine stock and re-order levels." />
-      <DashboardCard title="Dispense" description="Dispense medicines based on doctor prescriptions." />
-    </div>
-  </div>
+  <Routes>
+    <Route index element={<PharmacistHome />} />
+    <Route path="inventory" element={<InventoryList />} />
+    <Route path="inventory/new" element={<InventoryForm />} />
+    <Route path="dispense" element={<DispenseQueue />} />
+  </Routes>
 );
 
 export const LabTechnicianDashboard = () => (

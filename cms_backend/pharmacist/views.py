@@ -34,3 +34,28 @@ class MedicineStockViewSet(viewsets.ModelViewSet):
         )
         serializer = self.get_serializer(low_stock_items, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def dispense(self, request, pk=None):
+        stock_item = self.get_object()
+        quantity = int(request.data.get('quantity', 0))
+        prescription_id = request.data.get('prescriptionId')
+
+        if quantity <= 0:
+            return Response({"error": "Quantity must be greater than zero."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if stock_item.StockInHand < quantity:
+            return Response({"error": "Insufficient stock."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Assuming prescription validation is needed:
+        if prescription_id:
+            from doctor.models import TblMedicinePrescription
+            try:
+                prescription = TblMedicinePrescription.objects.get(MedicinePrescriptionId=prescription_id, IsActive=True)
+                # Validation could be added here if the medicine matches the prescription
+            except TblMedicinePrescription.DoesNotExist:
+                return Response({"error": "Active prescription not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        stock_item.StockInHand -= quantity
+        stock_item.save()
+        return Response({"message": "Medicine dispensed successfully", "remaining_stock": stock_item.StockInHand}, status=status.HTTP_200_OK)

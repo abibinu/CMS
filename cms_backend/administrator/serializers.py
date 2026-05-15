@@ -16,6 +16,11 @@ class StaffSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'Password': {'write_only': True} 
         }
+    def update(self, instance, validated_data):
+        from django.contrib.auth.hashers import make_password
+        if 'Password' in validated_data and not validated_data['Password'].startswith('pbkdf2_sha256$'):
+            validated_data['Password'] = make_password(validated_data['Password'])
+        return super().update(instance, validated_data)
 
 class SpecializationSerializer(serializers.ModelSerializer):
     class Meta:

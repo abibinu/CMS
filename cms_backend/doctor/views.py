@@ -27,6 +27,13 @@ class MedicinePrescriptionViewSet(viewsets.ModelViewSet):
     queryset = TblMedicinePrescription.objects.all()
     serializer_class = MedicinePrescriptionSerializer
 
+    def get_serializer(self, *args, **kwargs):
+        if "data" in kwargs:
+            data = kwargs["data"]
+            if isinstance(data, list):
+                kwargs["many"] = True
+        return super().get_serializer(*args, **kwargs)
+
     def get_queryset(self):
         queryset = TblMedicinePrescription.objects.all()
         appointment_id = self.request.query_params.get('appointmentId')
@@ -41,6 +48,13 @@ class MedicinePrescriptionViewSet(viewsets.ModelViewSet):
 class LabTestPrescriptionViewSet(viewsets.ModelViewSet):
     queryset = TblLabTestPrescription.objects.all()
     serializer_class = LabTestPrescriptionSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        if "data" in kwargs:
+            data = kwargs["data"]
+            if isinstance(data, list):
+                kwargs["many"] = True
+        return super().get_serializer(*args, **kwargs)
 
     def get_queryset(self):
         queryset = TblLabTestPrescription.objects.all()

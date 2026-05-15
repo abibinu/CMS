@@ -2,7 +2,7 @@
 
 # Clinic Management System
 
-[![Status](https://img.shields.io/badge/Status-In%20Development-blue?style=flat-square)](https://github.com)
+[![Status](https://img.shields.io/badge/Status-Completed-green?style=flat-square)](https://github.com)
 [![Modules](https://img.shields.io/badge/Modules-5-green?style=flat-square)](https://github.com)
 [![Epics](https://img.shields.io/badge/Epics-12-orange?style=flat-square)](https://github.com)
 [![Institute](https://img.shields.io/badge/Faith%20Infotech%20Academy-Technopark%2C%20TVM-purple?style=flat-square)](https://github.com)
@@ -343,7 +343,7 @@ Lab technicians process test orders, record results, and make reports available 
 
 <div align="center">
 
- Faith Infotech Academy · Technopark, Thiruvananthapuram
+ Done at: Faith Infotech Academy · Technopark, Thiruvananthapuram
 
 
 </div>

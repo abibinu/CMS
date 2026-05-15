@@ -28,6 +28,26 @@ const BillingList = () => {
     b.PatientName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handlePrint = (bill) => {
+    const printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>Print Bill</title>');
+    printWindow.document.write('<style>body{font-family:sans-serif;padding:2rem;} .bill-header{text-align:center;border-bottom:2px solid #ccc;padding-bottom:1rem;margin-bottom:2rem;} .row{display:flex;justify-content:space-between;margin-bottom:0.5rem;}</style>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write('<div class="bill-header"><h2>MacFast CMS Clinic</h2><p>Official Consultation Receipt</p></div>');
+    printWindow.document.write(`<div class="row"><b>Bill #:</b> ${bill.BillId}</div>`);
+    printWindow.document.write(`<div class="row"><b>Date:</b> ${new Date(bill.BillDate).toLocaleDateString()}</div>`);
+    printWindow.document.write(`<div class="row"><b>Patient:</b> ${bill.PatientName}</div>`);
+    printWindow.document.write('<hr style="margin:1.5rem 0;border:none;border-top:1px dashed #ccc;" />');
+    printWindow.document.write(`<div class="row"><span>Consultation Fee:</span> <span>₹${bill.ConsultationFee}</span></div>`);
+    printWindow.document.write(`<div class="row"><span>Registration Charge:</span> <span>₹${bill.RegistrationCharge}</span></div>`);
+    printWindow.document.write(`<div class="row"><span>Additional Charges:</span> <span>₹${bill.AdditionalCharges}</span></div>`);
+    printWindow.document.write('<hr style="margin:1.5rem 0;border:none;border-top:1px solid #000;" />');
+    printWindow.document.write(`<div class="row" style="font-size:1.2rem;"><b>Total Amount:</b> <b>₹${bill.TotalAmount}</b></div>`);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+  };
+
   return (
     <div className="card">
       <div className="table-header">
@@ -76,8 +96,17 @@ const BillingList = () => {
                     <td className="actions-cell">
                       <button 
                         className="icon-btn edit-btn" 
+                        title="Edit Bill"
+                        onClick={() => navigate('edit', { state: { bill } })}
+                        style={{ marginRight: '0.5rem' }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                      </button>
+                      <button 
+                        className="icon-btn" 
                         title="View Receipt"
-                        onClick={() => alert(`Printing Bill #${bill.BillId}...\nTotal: ₹${bill.TotalAmount}`)}
+                        onClick={() => handlePrint(bill)}
+                        style={{ background: '#f1f5f9', color: '#475569' }}
                       >
                         <FileText size={16} />
                       </button>

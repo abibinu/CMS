@@ -1,0 +1,279 @@
+MacFast CMS
+Clinic Management System
+
+Jira Planning Document
+Epics  ·  User Stories  ·  Tasks
+Week 1 Batch - Faith Infotech Academy
+Technopark, Thiruvananthapuram
+
+MODULE: Administrator Module
+EPIC  Authentication & Access Control
+User Story: As an admin, I want to log in securely so that I can access the system.
+Tasks:
+Design login UI (email + password fields, forgot password link)
+Develop login API endpoint (POST /api/auth/login)
+Implement JWT-based authentication and session management
+Validate credentials against hashed passwords in the database
+Handle error messages (invalid credentials, inactive account)
+Implement logout functionality and token invalidation
+Write test cases for login and logout flows
+
+EPIC  Staff Management
+User Story: As an admin, I want to create new staff profiles so that I can onboard team members with appropriate access.
+Tasks:
+Design Add Staff UI form (Name, Contact, Gender, Address, Salary, EmpID, Role)
+Develop Create Staff API (POST /api/staff)
+Implement form validation (required fields, format checks)
+Hash password before storing in TblStaff
+Assign role to staff from TblRole on creation
+Write test case: valid data → 201 Created
+Write test case: missing fields → 400 Bad Request
+
+User Story: As an admin, I want to update existing staff records so that I can keep their information current.
+Tasks:
+Design Edit Staff UI with pre-filled form
+Develop Update Staff API (PUT /api/staff/{staffId})
+Validate updated fields before persisting
+Prevent duplicate username/email updates
+Write test case: valid update → 200 OK
+
+User Story: As an admin, I want to deactivate staff accounts so that I can revoke system access when needed.
+Tasks:
+Add Deactivate button in staff list UI
+Develop Deactivate Staff API (PATCH /api/staff/{staffId}/deactivate)
+Set IsActive = 0 in TblStaff (soft delete)
+Prevent deactivated staff from logging in
+Write test case: valid deactivation → 200 OK
+
+User Story: As an admin, I want to view and search the staff list so that I can manage all staff members efficiently.
+Tasks:
+Design Staff List UI with search bar and Edit/Delete buttons
+Develop List All Staff API (GET /api/staff)
+Develop Get Staff by ID API (GET /api/staff/{staffId})
+Implement search/filter by name or role
+Write test case: retrieve all staff → 200 OK with list
+
+EPIC  Doctor Management
+User Story: As an admin, I want to create doctor profiles so that they can be assigned to patient appointments.
+Tasks:
+Design Add Doctor UI (link to staff, select specialization, set consultation fee)
+Develop Create Doctor Profile API (POST /api/doctors)
+Link DoctorId to StaffId in TblDoctor
+Populate SpecializationId from TblSpecialization
+Write test case: valid doctor creation → 201 Created
+
+User Story: As an admin, I want to update and deactivate doctor profiles so that doctor availability is always accurate.
+Tasks:
+Design Edit Doctor UI with editable fields
+Develop Update Doctor API (PUT /api/doctors/{doctorId})
+Develop Deactivate Doctor API (PATCH /api/doctors/{doctorId}/deactivate)
+Ensure deactivated doctors are not shown in appointment scheduling
+Write test cases for update and deactivation
+
+User Story: As an admin, I want to manage medical specializations so that doctors can be categorized correctly.
+Tasks:
+Develop Add Specialization API (POST /api/specializations)
+Develop Update Specialization API (PUT /api/specializations/{specializationId})
+Develop List Specializations API (GET /api/specializations)
+Show specialization dropdown in doctor creation form
+Write test cases for specialization CRUD
+
+EPIC  Role Management
+User Story: As an admin, I want to define and manage roles so that each staff member has the correct system access.
+Tasks:
+Seed default roles: Administrator, Receptionist, Doctor, Pharmacist, Lab Technician
+Develop Get Role by ID API (GET /api/roles/{roleId})
+Develop List All Roles API (GET /api/roles)
+Show role selection in staff creation/edit forms
+Write test case: retrieve role by valid ID → 200 OK
+
+
+MODULE: Receptionist Module
+EPIC  Patient Registration & Management
+User Story: As a receptionist, I want to register new patients so that their records are available for appointments.
+Tasks:
+Design Patient Registration UI (Name, Contact, Age, Gender, Address, Membership)
+Develop Register Patient API (POST /api/patients)
+Auto-generate PatientId and assign MembershipId
+Validate required fields and mobile number format
+Write test case: valid patient registration → 201 Created
+Write test case: missing required field → 400 Bad Request
+
+User Story: As a receptionist, I want to update patient details so that their records remain accurate.
+Tasks:
+Design Edit Patient UI with pre-filled form
+Develop Update Patient API (PUT /api/patients/{patientId})
+Validate changes before persisting
+Write test case: valid update → 200 OK
+
+User Story: As a receptionist, I want to search and view patient records so that I can quickly find patients.
+Tasks:
+Design Patient Search UI with search bar (name, ID, mobile)
+Develop List All Patients API (GET /api/patients)
+Develop Get Patient by ID API (GET /api/patients/{patientId})
+Implement search/filter functionality on the frontend
+Write test case: retrieve patient list → 200 OK
+
+EPIC  Appointment Scheduling
+User Story: As a receptionist, I want to schedule appointments so that patients can consult with doctors.
+Tasks:
+Design Book Appointment UI (select existing/new patient, choose doctor, set date/time)
+Develop Schedule Appointment API (POST /api/appointments)
+Check doctor availability before booking
+Auto-generate TokenNumber for the appointment
+Validate patientId, doctorId, and appointmentDate
+Write test case: valid appointment → 201 Created
+
+User Story: As a receptionist, I want to update or cancel appointments so that scheduling changes are reflected immediately.
+Tasks:
+Design Edit Appointment UI
+Develop Update Appointment API (PUT /api/appointments/{appointmentId})
+Develop Cancel Appointment API (PATCH /api/appointments/{appointmentId}/cancel)
+Update ConsultationStatus to 'Cancelled' on cancellation
+Write test cases for update and cancel flows
+
+User Story: As a receptionist, I want to view the appointment list by date so that I can manage daily schedules.
+Tasks:
+Design Appointment List UI with date filter
+Develop List Appointments by Date API (GET /api/appointments?date={date})
+Develop List by Patient API (GET /api/appointments/patient/{patientId})
+Develop List by Doctor API (GET /api/appointments/doctor/{doctorId})
+Develop Get Appointments by Status API (GET /api/appointments?status={status})
+Write test cases for all listing scenarios
+
+EPIC  Consultation Billing
+User Story: As a receptionist, I want to generate consultation bills so that patients are charged correctly after appointments.
+Tasks:
+Design Consultation Bill UI (shows patient, doctor, charges, total)
+Develop Generate Bill API (POST /api/billing)
+Pull consultation fee from TblDoctor based on appointment
+Include registration and additional charges in the bill
+Add print functionality for the bill
+Write test case: valid bill generation → 201 Created
+
+User Story: As a receptionist, I want to update and view bills so that billing records are accurate.
+Tasks:
+Develop Update Bill API (PUT /api/billing/{appointmentId})
+Develop Get Bill by Appointment API (GET /api/billing/{appointmentId})
+Develop List Bills by Date Range API (GET /api/billing?startDate=&endDate=)
+Write test cases for bill update and retrieval
+
+
+MODULE: Doctor Module
+EPIC  Consultation Notes & Diagnosis
+User Story: As a doctor, I want to record consultation notes so that the patient's diagnosis and symptoms are documented.
+Tasks:
+Design Add Diagnosis/Symptoms UI (linked to appointment)
+Develop Add Consultation Note API (POST /api/consultations)
+Store symptoms, diagnosis, and notes in TblConsultation
+Link consultation record to AppointmentId
+Write test case: valid note addition → 201 Created
+
+User Story: As a doctor, I want to view consultation history so that I can review past treatments for a patient.
+Tasks:
+Design Patient History tab in Doctor UI
+Develop List Consultation History by Patient API (GET /api/consultations/patient/{patientId})
+Develop List Consultation History by Doctor API (GET /api/consultations/doctor/{doctorId})
+Develop Get Consultation History by Appointment API (GET /api/consultations/history/appointment/{appointmentId})
+Display history with date-wise entries
+Write test cases for all history retrieval scenarios
+
+EPIC  Medicine Prescription
+User Story: As a doctor, I want to prescribe medication so that the pharmacist can dispense the right medicines.
+Tasks:
+Design Prescribe Medicines UI (select medicine, dosage, frequency, duration)
+Develop Create Medicine Prescription API (POST /api/prescriptions/medicine)
+Link prescription to AppointmentId in TblMedicinePrescription
+Allow multiple medicines per prescription
+Write test case: valid prescription → 201 Created
+
+User Story: As a doctor, I want to update prescriptions and view prescription history so that medication records stay current.
+Tasks:
+Develop Update Medicine Prescription API (PUT /api/prescriptions/medicine/{prescriptionId})
+Develop Get Prescription by Appointment API (GET /api/prescriptions/medicine/appointment/{appointmentId})
+Develop List Prescriptions by Patient API (GET /api/prescriptions/medicine/patient/{patientId})
+Develop Prescription History by Patient API (GET /api/prescriptions/medicine/history/patient/{patientId})
+Develop Prescription History by Doctor API (GET /api/prescriptions/medicine/history/doctor/{doctorId})
+Write test cases for all update and history endpoints
+
+EPIC  Lab Test Prescription
+User Story: As a doctor, I want to prescribe lab tests so that the lab technician can conduct the required tests.
+Tasks:
+Design Prescribe Lab Test UI (select tests, add instructions)
+Develop Create Lab Test Prescription API (POST /api/prescriptions/labtest)
+Link lab test prescription to AppointmentId in TblLabTestPrescription
+Allow multiple tests per prescription
+Write test case: valid lab test prescription → 201 Created
+
+User Story: As a doctor, I want to view lab test results so that I can review the patient's test outcomes.
+Tasks:
+Design View Test Report UI (filter by patient, appointment date)
+Develop Get Lab Test Prescription by Appointment API (GET /api/prescriptions/labtest/appointment/{appointmentId})
+Develop List Lab Test Prescriptions by Patient API (GET /api/prescriptions/labtest/patient/{patientId})
+Develop Update Lab Test Prescription API (PUT /api/prescriptions/labtest/{prescriptionId})
+Write test cases for lab test prescription retrieval and update
+
+
+MODULE: Pharmacist Module
+EPIC  Medicine Management
+User Story: As a pharmacist, I want to add and manage medicines so that the inventory is always up to date.
+Tasks:
+Design Add Medicine UI (name, category, manufacturing/expiry date, unit, status)
+Develop Add New Medicine API (POST /api/medicines)
+Develop Update Medicine API (PUT /api/medicines/{medicineId})
+Develop Get Medicine by ID API (GET /api/medicines/{medicineId})
+Develop List All Medicines API (GET /api/medicines)
+Develop Deactivate Medicine API (PATCH /api/medicines/{medicineId}/deactivate)
+Write test cases for all medicine CRUD operations
+
+EPIC  Medicine Inventory Management
+User Story: As a pharmacist, I want to track stock levels so that I know when to reorder medicines.
+Tasks:
+Design Medicine Inventory UI (list with stock levels, re-order flags)
+Develop Add Inventory Item API (POST /api/inventory/medicine)
+Develop Update Inventory Quantity API (PUT /api/inventory/medicine/{medicineStockId})
+Develop Get Inventory by Medicine API (GET /api/inventory/medicine/{medicineId})
+Develop List All Inventory API (GET /api/inventory/medicine)
+Develop Flag Low Stock API (PATCH /api/inventory/medicine/{medicineStockId}/flag-low)
+Write test cases for inventory management
+
+User Story: As a pharmacist, I want to dispense medicines based on doctor prescriptions so that patients receive the correct medication.
+Tasks:
+Design Dispense Medicine UI (retrieve prescription by patient ID/mobile)
+Show prescription details: medicine, dosage, frequency, duration
+Update stock levels in TblMedicineStock upon dispensing (Issuance)
+Generate Medicine Bill UI and print functionality
+Validate prescription exists and is active before dispensing
+Write test cases for dispense and inventory adjustment
+
+
+MODULE: Lab Technician Module
+EPIC  Lab Test Management
+User Story: As a lab technician, I want to add and manage lab tests so that all available tests are registered in the system.
+Tasks:
+Design Add Lab Test UI (test name, category, amount, reference ranges, sample type)
+Develop Add New Lab Test API (POST /api/labtests)
+Develop Update Lab Test API (PUT /api/labtests/{labTestId})
+Develop Get Lab Test by ID API (GET /api/labtests/{labTestId})
+Develop List All Lab Tests API (GET /api/labtests)
+Develop Deactivate Lab Test API (PATCH /api/labtests/{labTestId}/deactivate)
+Write test cases for all lab test CRUD operations
+
+EPIC  Lab Test Prescription & Results
+User Story: As a lab technician, I want to view lab test prescriptions so that I know which tests to conduct.
+Tasks:
+Design View Prescription UI (search by patient ID or mobile)
+List prescribed lab tests with patient and doctor details
+Develop Get Lab Test Result by Appointment API (GET /api/labtests/results/appointment/{appointmentId})
+Develop List Lab Test Results by Date Range API (GET /api/labtests/results?startDate=&endDate=)
+Write test cases for prescription retrieval
+
+User Story: As a lab technician, I want to record lab test results so that doctors and patients can access them.
+Tasks:
+Design Add Test Report UI (input LabTestValue and Remarks per test)
+Develop Record Lab Test Result API (PUT /api/labtests/results/{labTestPrescriptionId})
+Store LabTestValue and Remarks in TblLabTestPrescription
+Link results to AppointmentId for traceability
+Develop Deactivate Lab Test Prescription API (PATCH /api/labtests/{labTestPrescriptionId}/deactivate)
+Write test case: record result → 200 OK
+Write test case: retrieve result by appointment ID → 200 OK with data

@@ -53,6 +53,24 @@ const DispenseQueue = () => {
     setDispenseQuantities(prev => ({ ...prev, [prescriptionId]: value }));
   };
 
+  const handlePrint = (prescription, qty) => {
+    const printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>Medicine Bill</title>');
+    printWindow.document.write('<style>body{font-family:sans-serif;padding:2rem;} .bill-header{text-align:center;border-bottom:2px solid #ccc;padding-bottom:1rem;margin-bottom:2rem;} .row{display:flex;justify-content:space-between;margin-bottom:0.5rem;}</style>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write('<div class="bill-header"><h2>MacFast Pharmacy</h2><p>Official Medicine Bill</p></div>');
+    printWindow.document.write(`<div class="row"><b>Date:</b> ${new Date().toLocaleDateString()}</div>`);
+    printWindow.document.write(`<div class="row"><b>Patient:</b> ${prescription.PatientName || 'Walk-in'}</div>`);
+    printWindow.document.write('<hr style="margin:1.5rem 0;border:none;border-top:1px dashed #ccc;" />');
+    printWindow.document.write(`<div class="row"><span>Medicine:</span> <span>${prescription.MedicineName}</span></div>`);
+    printWindow.document.write(`<div class="row"><span>Quantity Dispensed:</span> <span>${qty}</span></div>`);
+    printWindow.document.write('<hr style="margin:1.5rem 0;border:none;border-top:1px solid #000;" />');
+    printWindow.document.write(`<div class="row" style="font-size:1.2rem;text-align:center;"><b>Thank you for visiting!</b></div>`);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+  };
+
   const handleDispenseItem = async (prescription) => {
     const qty = parseInt(dispenseQuantities[prescription.MedicinePrescriptionId] || 0);
     if (qty <= 0) {
@@ -60,7 +78,6 @@ const DispenseQueue = () => {
       return;
     }
 
-    // Find the MedicineStockId for this Medicine
     const stockItem = inventory.find(i => i.MedicineId === prescription.MedicineId);
     if (!stockItem) {
       alert("Error: This medicine does not exist in the inventory database.");
@@ -74,20 +91,19 @@ const DispenseQueue = () => {
 
     setProcessing(true);
     try {
-      // 1. Hit the custom backend dispense endpoint to reduce stock safely
       await api.post(`/pharmacist/inventory/${stockItem.MedicineStockId}/dispense/`, {
         quantity: qty,
         prescriptionId: prescription.MedicinePrescriptionId
       });
 
-      // 2. Deactivate the prescription so it leaves the queue
       await api.patch(`/prescriptions/medicine/${prescription.MedicinePrescriptionId}/`, {
         IsActive: false
       });
 
-      // Refresh the queue and inventory
       await fetchQueueData();
-      alert(`Successfully dispensed ${qty} unit(s) of ${prescription.MedicineName}`);
+      
+      // Generate and Print Bill
+      handlePrint(prescription, qty);
 
     } catch (err) {
       console.error(err);

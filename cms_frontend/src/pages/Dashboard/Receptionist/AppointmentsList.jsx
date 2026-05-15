@@ -1,26 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Edit2, Search } from 'lucide-react';
+import { Plus, Edit2, Search, XCircle } from 'lucide-react';
 import api from '../../../api/axios';
 
 const AppointmentsList = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterDate, setFilterDate] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchAppointments();
-  }, []);
+  }, [filterDate]);
 
   const fetchAppointments = async () => {
     try {
-      const response = await api.get('/appointments/');
+      setLoading(true);
+      const endpoint = filterDate ? `/appointments/?date=${filterDate}` : '/appointments/';
+      const response = await api.get(endpoint);
       setAppointments(response.data);
     } catch (error) {
       console.error('Failed to fetch appointments', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCancel = async (id) => {
+    if (window.confirm('Are you sure you want to cancel this appointment?')) {
+      try {
+        await api.patch(`/appointments/${id}/cancel/`);
+        fetchAppointments();
+      } catch (error) {
+        console.error('Failed to cancel appointment', error);
+        alert('Could not cancel the appointment.');
+      }
     }
   };
 
@@ -35,6 +50,13 @@ const AppointmentsList = () => {
       <div className="table-header">
         <h2>Appointment Scheduling</h2>
         <div className="header-actions">
+          <input 
+            type="date" 
+            className="input-field" 
+            style={{ marginBottom: 0, padding: '0.4rem' }}
+            value={filterDate}
+            onChange={(e) => setFilterDate(e.target.value)}
+          />
           <div className="search-bar">
             <Search size={18} color="var(--text-muted)" />
             <input 
@@ -87,6 +109,15 @@ const AppointmentsList = () => {
                       >
                         <Edit2 size={16} />
                       </button>
+                      {appt.ConsultationStatus === 'Scheduled' && (
+                        <button 
+                          className="icon-btn delete-btn" 
+                          title="Cancel Appointment"
+                          onClick={() => handleCancel(appt.AppointmentId)}
+                        >
+                          <XCircle size={16} />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))

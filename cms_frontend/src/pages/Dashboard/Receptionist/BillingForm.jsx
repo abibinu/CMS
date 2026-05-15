@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import api from '../../../api/axios';
 
 const BillingForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const editBill = location.state?.bill || null;
 
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({
-    AppointmentId: '',
-    RegistrationCharge: 0,
-    AdditionalCharges: 0,
+    AppointmentId: editBill?.AppointmentId || '',
+    RegistrationCharge: editBill?.RegistrationCharge || 0,
+    AdditionalCharges: editBill?.AdditionalCharges || 0,
   });
 
   useEffect(() => {
@@ -24,7 +26,7 @@ const BillingForm = () => {
         const completedAppts = response.data.filter(a => a.ConsultationStatus === 'Completed' && a.IsActive);
         setAppointments(completedAppts);
 
-        if (completedAppts.length > 0) {
+        if (!editBill && completedAppts.length > 0) {
             setFormData(prev => ({...prev, AppointmentId: completedAppts[0].AppointmentId}));
         }
       } catch (err) {
@@ -33,7 +35,7 @@ const BillingForm = () => {
       }
     };
     fetchAppointments();
-  }, []);
+  }, [editBill]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,12 +48,15 @@ const BillingForm = () => {
     setError('');
 
     try {
-      // Total amount and consultation fee are automatically calculated by the backend!
-      await api.post('/billing/', formData);
+      if (editBill) {
+        await api.put(`/billing/${editBill.BillId}/`, formData);
+      } else {
+        await api.post('/billing/', formData);
+      }
       navigate('/receptionist-dashboard/billing');
     } catch (err) {
       console.error(err);
-      setError('An error occurred while generating the bill. Ensure this appointment does not already have a bill.');
+      setError('An error occurred while saving the bill.');
     } finally {
       setLoading(false);
     }
@@ -63,7 +68,7 @@ const BillingForm = () => {
         <button onClick={() => navigate(-1)} className="btn-secondary" style={{ padding: '0.5rem', borderRadius: '50%', background: '#f1f5f9' }}>
           <ArrowLeft size={20} />
         </button>
-        <h2>Generate Bill</h2>
+        <h2>{editBill ? 'Edit Bill' : 'Generate Bill'}</h2>
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -72,8 +77,9 @@ const BillingForm = () => {
         
         <div className="input-group" style={{ marginBottom: 0, gridColumn: '1 / -1' }}>
           <label className="input-label">Select Completed Appointment</label>
-          <select name="AppointmentId" className="input-field" value={formData.AppointmentId} onChange={handleChange} required>
+          <select name="AppointmentId" className="input-field" value={formData.AppointmentId} onChange={handleChange} required disabled={editBill}>
             <option value="" disabled>Select an appointment...</option>
+            {editBill && <option value={editBill.AppointmentId}>Appointment #{editBill.AppointmentId} - {editBill.PatientName}</option>}
             {appointments.map(a => (
               <option key={a.AppointmentId} value={a.AppointmentId}>
                 {a.AppointmentDate} - {a.PatientName} (Dr. {a.DoctorName})
@@ -99,8 +105,8 @@ const BillingForm = () => {
         </div>
 
         <div style={{ gridColumn: '1 / -1', marginTop: '1rem' }}>
-          <button type="submit" className="btn-primary" disabled={loading || appointments.length === 0}>
-            {loading ? 'Processing...' : 'Generate Bill'}
+          <button type="submit" className="btn-primary" disabled={loading || (!editBill && appointments.length === 0)}>
+            {loading ? 'Processing...' : (editBill ? 'Update Bill' : 'Generate Bill')}
           </button>
         </div>
       </form>

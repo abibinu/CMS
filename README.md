@@ -341,23 +341,9 @@ Lab technicians process test orders, record results, and make reports available 
 
 ---
 
-## 📊 Jira Planning Summary
-
-| Module | Epics | User Stories |
-|---|---|---|
-| Administrator | 4 | 9 |
-| Receptionist | 3 | 7 |
-| Doctor | 3 | 6 |
-| Pharmacist | 2 | 3 |
-| Lab Technician | 2 | 4 |
-| **Total** | **14** | **29** |
-
----
-
 <div align="center">
 
-**MacFast CMS** · Faith Infotech Academy · Technopark, Thiruvananthapuram
+ Faith Infotech Academy · Technopark, Thiruvananthapuram
 
-*Week 1 Planning Batch · Epics · User Stories · Tasks*
 
 </div>

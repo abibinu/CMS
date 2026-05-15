@@ -1,3 +1,6 @@
+# Lab Technician Module API Views
+# Manages laboratory tests catalog and test result recording
+
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -12,12 +15,12 @@ from .serializers import (
 
 
 # =========================================
-# LAB TEST MANAGEMENT
+# LAB TEST CATALOG MANAGEMENT
 # =========================================
 
 @api_view(['POST'])
 def add_lab_test(request):
-
+    """Create a new lab test in the catalog"""
     serializer = LabTestSerializer(data=request.data)
 
     if serializer.is_valid():
@@ -39,7 +42,7 @@ def add_lab_test(request):
 
 @api_view(['PUT'])
 def update_lab_test(request, labTestId):
-
+    """Update an existing lab test details"""
     try:
         lab_test = TblLabTest.objects.get(
             LabTestId=labTestId
@@ -74,7 +77,7 @@ def update_lab_test(request, labTestId):
 
 @api_view(['GET'])
 def get_lab_test(request, labTestId):
-
+    """Retrieve details of a specific lab test"""
     try:
         lab_test = TblLabTest.objects.get(
             LabTestId=labTestId
@@ -92,7 +95,7 @@ def get_lab_test(request, labTestId):
 
 @api_view(['GET'])
 def list_lab_tests(request):
-
+    """List all available laboratory tests"""
     tests = TblLabTest.objects.filter(IsActive=True)
 
     serializer = LabTestSerializer(
@@ -105,7 +108,7 @@ def list_lab_tests(request):
 
 @api_view(['PATCH'])
 def deactivate_lab_test(request, labTestId):
-
+    """Deactivate a lab test (soft delete)"""
     try:
         lab_test = TblLabTest.objects.get(
             LabTestId=labTestId
@@ -130,7 +133,7 @@ def deactivate_lab_test(request, labTestId):
 
 @api_view(['PUT'])
 def record_lab_test_result(request, labTestPrescriptionId):
-
+    """Record and update lab test results for a patient prescription"""
     try:
         prescription = TblLabTestPrescription.objects.get(
             LabTestPrescriptionId=labTestPrescriptionId

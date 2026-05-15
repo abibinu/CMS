@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# Django command-line utility for managing the Clinic Management System
+# Handles database migrations, server startup, model creation, and other admin tasks
+
 """Django's command-line utility for administrative tasks."""
 import os
 import sys

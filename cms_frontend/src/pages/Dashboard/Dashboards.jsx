@@ -1,3 +1,6 @@
+// Dashboard routing for all clinic roles
+// Each role has its own dashboard with specific features and workflows
+
 import React from 'react';
 
 import { Routes, Route } from 'react-router-dom';
@@ -10,6 +13,7 @@ import SpecializationForm from './Admin/SpecializationForm';
 import RolesList from './Admin/RolesList';
 import { useNavigate } from 'react-router-dom';
 
+// Reusable dashboard card component
 const DashboardCard = ({ title, description, link }) => {
   const navigate = useNavigate();
   return (
@@ -19,6 +23,11 @@ const DashboardCard = ({ title, description, link }) => {
     </div>
   );
 };
+
+// =====================
+// ADMINISTRATOR DASHBOARD
+// =====================
+// Manages system-wide operations: staff, doctors, roles, specializations
 
 const AdminHome = () => (
   <div>
@@ -35,18 +44,22 @@ const AdminHome = () => (
 export const AdminDashboard = () => (
   <Routes>
     <Route index element={<AdminHome />} />
+    {/* Staff management routes */}
     <Route path="staff" element={<StaffManagement />} />
     <Route path="staff/new" element={<StaffForm />} />
     <Route path="staff/edit" element={<StaffForm />} />
     
+    {/* Doctor management routes */}
     <Route path="doctors" element={<DoctorManagement />} />
     <Route path="doctors/new" element={<DoctorForm />} />
     <Route path="doctors/edit" element={<DoctorForm />} />
 
+    {/* Specialization management routes */}
     <Route path="specializations" element={<SpecializationsList />} />
     <Route path="specializations/new" element={<SpecializationForm />} />
     <Route path="specializations/edit" element={<SpecializationForm />} />
 
+    {/* Roles view route */}
     <Route path="roles" element={<RolesList />} />
   </Routes>
 );
@@ -57,6 +70,11 @@ import AppointmentsList from './Receptionist/AppointmentsList';
 import AppointmentForm from './Receptionist/AppointmentForm';
 import BillingList from './Receptionist/BillingList';
 import BillingForm from './Receptionist/BillingForm';
+
+// =====================
+// RECEPTIONIST DASHBOARD
+// =====================
+// Manages patient registration, appointments, and billing
 
 const ReceptionistHome = () => (
   <div>
@@ -72,10 +90,12 @@ const ReceptionistHome = () => (
 export const ReceptionistDashboard = () => (
   <Routes>
     <Route index element={<ReceptionistHome />} />
+    {/* Patient management routes */}
     <Route path="patients" element={<PatientsList />} />
     <Route path="patients/new" element={<PatientForm />} />
     <Route path="patients/edit" element={<PatientForm />} />
     
+    {/* Appointment management routes */}
     <Route path="appointments" element={<AppointmentsList />} />
     <Route path="appointments/new" element={<AppointmentForm />} />
     <Route path="appointments/edit" element={<AppointmentForm />} />

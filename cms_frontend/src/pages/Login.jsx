@@ -1,3 +1,6 @@
+// Login page component
+// Handles staff authentication with username/password and JWT token management
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Activity } from 'lucide-react';
@@ -11,21 +14,23 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Handle login form submission
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
+      // Send credentials to backend authentication endpoint
       const response = await api.post('/auth/login/', { username, password });
       
       if (response.data.access_token) {
-        // Save auth data
+        // Store authentication data in localStorage
         localStorage.setItem('access_token', response.data.access_token);
         localStorage.setItem('role', response.data.role);
         localStorage.setItem('staff_id', response.data.staff_id);
         
-        // Redirect based on role
+        // Redirect to role-specific dashboard
         const role = response.data.role.toLowerCase();
         navigate(`/${role.replace(' ', '')}-dashboard`);
       }

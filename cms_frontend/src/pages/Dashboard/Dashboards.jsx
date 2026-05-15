@@ -98,12 +98,23 @@ export const PharmacistDashboard = () => (
   </Routes>
 );
 
-export const LabTechnicianDashboard = () => (
+import PendingTests from './LabTechnician/PendingTests';
+import LabTestsList from './LabTechnician/LabTestsList';
+
+const LabTechnicianHome = () => (
   <div>
     <h1 style={{ marginBottom: '1.5rem' }}>Lab Technician Dashboard</h1>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-      <DashboardCard title="Lab Tests" description="Manage available lab tests and pricing." />
-      <DashboardCard title="Test Results" description="Record results for patient prescriptions." />
+      <DashboardCard title="Pending Tests" description="View and record results for pending lab tests." />
+      <DashboardCard title="Lab Tests Reference" description="View the dictionary of available lab tests." />
     </div>
   </div>
+);
+
+export const LabTechnicianDashboard = () => (
+  <Routes>
+    <Route index element={<LabTechnicianHome />} />
+    <Route path="pending" element={<PendingTests />} />
+    <Route path="reference" element={<LabTestsList />} />
+  </Routes>
 );

@@ -186,7 +186,28 @@ Before testing the frontend, ensure both your backend and frontend are actively 
 
 ---
 
-## Step 7: Test Logout
+## Step 7: Test the Lab Technician Module
+
+*First, log in as an Administrator and create a staff member with the **Lab Technician** role. Then, log out and log back in using those Lab Technician credentials.*
+
+### A. View Lab Tests Reference
+1. Click **Lab Tests Reference** in the sidebar.
+2. Verify you can see the dictionary of available lab tests, complete with Min/Max ranges and Sample Requirements.
+   - *(Note: If this table is empty, you need to use your backend APIs or Postman to create some Lab Tests first!)*
+
+### B. The Pending Tests Queue
+1. Click **Pending Tests** in the sidebar.
+2. If you completed Step 5 (Doctor Module) successfully and prescribed a lab test, you should see a card here representing the patient and the requested test.
+3. Type a quantitative value into the "Test Result Value" input field (e.g., `14.5 g/dL`).
+4. (Optional) Type a note into the "Lab Remarks" field.
+5. Click the purple **Save** button.
+6. **Verification:**
+   - A success alert should pop up.
+   - The test should vanish from the queue because it was marked as completed (inactive)!
+
+---
+
+## Step 8: Test Logout
 1. In the top right corner of the screen, click the **Logout** icon.
 2. You should be immediately redirected back to the `/login` page.
 3. **Technical Check:** If you check Local Storage again (F12), the `access_token` and `role` will be completely wiped out. Try pressing your browser's "Back" button; the `ProtectedRoute` wrapper will block you from seeing the dashboard and force you back to login!

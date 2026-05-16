@@ -61,6 +61,8 @@ export const AdminDashboard = () => (
 
     {/* Roles view route */}
     <Route path="roles" element={<RolesList />} />
+    
+    <Route path="*" element={<AdminHome />} />
   </Routes>
 );
 
@@ -103,6 +105,8 @@ export const ReceptionistDashboard = () => (
     <Route path="billing" element={<BillingList />} />
     <Route path="billing/new" element={<BillingForm />} />
     <Route path="billing/edit" element={<BillingForm />} />
+    
+    <Route path="*" element={<ReceptionistHome />} />
   </Routes>
 );
 
@@ -158,6 +162,8 @@ export const PharmacistDashboard = () => (
     <Route path="categories" element={<CategoriesList />} />
     <Route path="categories/new" element={<CategoryForm />} />
     <Route path="categories/edit" element={<CategoryForm />} />
+    
+    <Route path="*" element={<PharmacistHome />} />
   </Routes>
 );
 
@@ -185,5 +191,7 @@ export const LabTechnicianDashboard = () => (
     <Route path="management" element={<LabTestManagement />} />
     <Route path="management/new" element={<LabTestForm />} />
     <Route path="management/edit" element={<LabTestForm />} />
+    
+    <Route path="*" element={<LabTechnicianHome />} />
   </Routes>
 );

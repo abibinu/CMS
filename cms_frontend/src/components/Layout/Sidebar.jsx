@@ -29,8 +29,8 @@ const Sidebar = ({ role }) => {
         ];
       case 'lab technician':
         return [
-          { name: 'Lab Tests', path: '/labtechnician-dashboard/tests', icon: <TestTube size={20}/> },
-          { name: 'Results', path: '/labtechnician-dashboard/results', icon: <FileText size={20}/> }
+          { name: 'Test Queue', path: '/labtechnician-dashboard/pending', icon: <TestTube size={20}/> },
+          { name: 'Test Dictionary', path: '/labtechnician-dashboard/management', icon: <FileText size={20}/> }
         ];
       default:
         return [];

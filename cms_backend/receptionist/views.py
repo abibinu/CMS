@@ -77,7 +77,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         )
 
     # Custom path: GET /api/appointments/patient/{patientId}/
-    @action(detail=False, methods=['get'], url_path='patient/(?P<patient_id>\d+)')
+    @action(detail=False, methods=['get'], url_path=r'patient/(?P<patient_id>\d+)')
     def by_patient(self, request, patient_id=None):
         """Get all appointments for a specific patient"""
         appointments = self.get_queryset().filter(PatientId=patient_id)
@@ -85,7 +85,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     # Custom path: GET /api/appointments/doctor/{doctorId}/
-    @action(detail=False, methods=['get'], url_path='doctor/(?P<doctor_id>\d+)')
+    @action(detail=False, methods=['get'], url_path=r'doctor/(?P<doctor_id>\d+)')
     def by_doctor(self, request, doctor_id=None):
         """Get all appointments for a specific doctor"""
         appointments = self.get_queryset().filter(DoctorId=doctor_id)

@@ -110,11 +110,23 @@ import DoctorAppointments from './Doctor/DoctorAppointments';
 import ConsultationWorkspace from './Doctor/ConsultationWorkspace';
 import PatientHistory from './Doctor/PatientHistory';
 
+const DoctorHome = () => (
+  <div>
+    <h1 style={{ marginBottom: '1.5rem' }}>Doctor Dashboard</h1>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+      <DashboardCard title="My Appointments" description="View and manage your daily consultation queue." link="appointments" />
+      <DashboardCard title="Patient History" description="Review past consultations, prescriptions, and lab results." link="history" />
+    </div>
+  </div>
+);
+
 export const DoctorDashboard = () => (
   <Routes>
-    <Route index element={<DoctorAppointments />} />
+    <Route index element={<DoctorHome />} />
+    <Route path="appointments" element={<DoctorAppointments />} />
     <Route path="consult/:id" element={<ConsultationWorkspace />} />
     <Route path="history" element={<PatientHistory />} />
+    <Route path="*" element={<DoctorHome />} />
   </Routes>
 );
 

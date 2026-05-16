@@ -20,7 +20,7 @@ const Sidebar = ({ role }) => {
       case 'doctor':
         return [
           { name: 'My Appointments', path: '/doctor-dashboard/appointments', icon: <Calendar size={20}/> },
-          { name: 'Prescriptions', path: '/doctor-dashboard/prescriptions', icon: <Pill size={20}/> }
+          { name: 'Patient History', path: '/doctor-dashboard/history', icon: <FileText size={20}/> }
         ];
       case 'pharmacist':
         return [

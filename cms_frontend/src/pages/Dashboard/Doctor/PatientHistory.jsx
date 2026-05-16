@@ -24,9 +24,9 @@ const PatientHistory = () => {
 
       // Fetch all historical data concurrently
       const [consultsRes, medsRes, labsRes] = await Promise.all([
-        api.get(`/consultations/patient/${patientId}/`).catch(() => ({ data: [] })),
-        api.get(`/prescriptions/medicine/patient/${patientId}/`).catch(() => ({ data: [] })),
-        api.get(`/prescriptions/labtest/patient/${patientId}/`).catch(() => ({ data: [] }))
+        api.get(`/consultations/?patientId=${patientId}`).catch(() => ({ data: [] })),
+        api.get(`/prescriptions/medicine/?patientId=${patientId}`).catch(() => ({ data: [] })),
+        api.get(`/prescriptions/labtest/?patientId=${patientId}`).catch(() => ({ data: [] }))
       ]);
 
       setHistory({

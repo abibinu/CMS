@@ -98,7 +98,7 @@ const DoctorAppointments = () => {
                       <button 
                         className="btn-primary" 
                         style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-                        onClick={() => navigate(`consult/${appt.AppointmentId}`, { state: { appointment: appt } })}
+                        onClick={() => navigate(`/doctor-dashboard/consult/${appt.AppointmentId}`, { state: { appointment: appt } })}
                       >
                         <Stethoscope size={16} /> Consult
                       </button>

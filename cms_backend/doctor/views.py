@@ -70,6 +70,11 @@ class LabTestPrescriptionViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = TblLabTestPrescription.objects.all()
         appointment_id = self.request.query_params.get('appointmentId')
+        patient_id = self.request.query_params.get('patientId')
+        
         if appointment_id:
             queryset = queryset.filter(AppointmentId=appointment_id)
+        if patient_id:
+            queryset = queryset.filter(AppointmentId__PatientId=patient_id)
+            
         return queryset

@@ -171,12 +171,14 @@ import PendingTests from './LabTechnician/PendingTests';
 import LabTestsList from './LabTechnician/LabTestsList';
 import LabTestManagement from './LabTechnician/LabTestManagement';
 import LabTestForm from './LabTechnician/LabTestForm';
+import LabTestHistory from './LabTechnician/LabTestHistory';
 
 const LabTechnicianHome = () => (
   <div>
     <h1 style={{ marginBottom: '1.5rem' }}>Lab Technician Dashboard</h1>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
       <DashboardCard title="Pending Tests" description="View and record results for pending lab tests." link="pending" />
+      <DashboardCard title="Lab Test History" description="Review completed lab test results." link="history" />
       <DashboardCard title="Lab Tests Reference" description="View the dictionary of available lab tests." link="reference" />
       <DashboardCard title="Dictionary Management" description="Add, edit, or deactivate lab tests." link="management" />
     </div>
@@ -187,6 +189,7 @@ export const LabTechnicianDashboard = () => (
   <Routes>
     <Route index element={<LabTechnicianHome />} />
     <Route path="pending" element={<PendingTests />} />
+    <Route path="history" element={<LabTestHistory />} />
     <Route path="reference" element={<LabTestsList />} />
     <Route path="management" element={<LabTestManagement />} />
     <Route path="management/new" element={<LabTestForm />} />

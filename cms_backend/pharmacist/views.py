@@ -14,6 +14,15 @@ class MedicineCategoryViewSet(viewsets.ModelViewSet):
     queryset = TblMedicineCategory.objects.all()
     serializer_class = MedicineCategorySerializer
 
+    # Custom action: PATCH /api/pharmacist/categories/{id}/deactivate/
+    @action(detail=True, methods=['patch'])
+    def deactivate(self, request, pk=None):
+        """Deactivate a medicine category (soft delete)"""
+        category = self.get_object()
+        category.IsActive = False
+        category.save()
+        return Response({"message": "Medicine category deactivated successfully"})
+
 # Medicine catalog management
 class MedicineViewSet(viewsets.ModelViewSet):
     """API for medicine information including manufacturing and expiry dates"""

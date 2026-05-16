@@ -17,5 +17,6 @@ urlpatterns = [
     path('labtests/results/<int:labTestPrescriptionId>/', views.record_lab_test_result),
     path('labtests/results/appointment/<int:appointmentId>/', views.get_lab_test_result_by_appointment),
     path('labtests/results/', views.list_lab_test_results),
+    path('labtests/results/completed/', views.list_completed_lab_test_results),
     path('labtests/results/<int:labTestPrescriptionId>/deactivate/', views.deactivate_lab_test_prescription),
 ]
